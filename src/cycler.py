@@ -21,19 +21,20 @@ class IconCycler:
         self.timer.start(TICK_INTERVAL) 
         self.tray.update_icon(1.0, self.interval.color)
 
-    
+    def pause(self) ->None:
+        print("Pausing")
+        self.halt()
+        self.state.pause()
+
     def halt(self) -> None:
-        self.state.stop()
         self.timer.stop()
 
     def __tick(self) -> None:
-        now = int(time.time())
-        ellapsed = now - self.state.start_time 
-        remaining = self.interval.duration - ellapsed
-        print(f"Remaining: {remaining}")
-        if remaining <= 0:
+        info = self.state.getTime()
+
+       ## print(f"Remaining: {info.remaining}")
+        if info.remaining <= 0:
             self.halt()
             self.start()
             return
-        percentage = remaining / self.interval.duration
-        self.tray.update_icon(percentage, self.interval.color)
+        self.tray.update_icon(info.percentage, self.interval.color)

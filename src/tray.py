@@ -1,13 +1,19 @@
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor, QBrush
-from PyQt6.QtCore import Qt, QObject
+from PyQt6.QtCore import Qt, QObject, pyqtSignal
 from typing import Optional
+from State import State
 
 class PomodoroTray(QSystemTrayIcon):
-    def __init__(self, parent: Optional[QObject] = None) -> None:
+    stop_event = pyqtSignal()
+    pause_event = pyqtSignal()
+    resume_event = pyqtSignal()
+    skip_event = pyqtSignal()
+
+    def __init__(self,state:State, parent: Optional[QObject] = None) -> None:
         super().__init__(parent)
+        self.state = state
         self.setToolTip("Pomodoro Timer")
-        
         self.update_icon()        
         self.setup_menu()
         self.show()
@@ -16,21 +22,22 @@ class PomodoroTray(QSystemTrayIcon):
     def setup_menu(self) -> None:
         menu = QMenu()
         
+    
        
-        action_75 = menu.addAction("75%")
-        action_75.triggered.connect(lambda: self.update_icon(0.75))
+        pause = menu.addAction("Pause")
+        pause.triggered.connect(self.pause_event.emit)
         
-        action_50 = menu.addAction("50%")
-        action_50.triggered.connect(lambda: self.update_icon(0.50))
+        resume = menu.addAction("Resume")
+        resume.triggered.connect(lambda: self.update_icon(0.50))
         
-        action_25 = menu.addAction("25%")
-        action_25.triggered.connect(lambda: self.update_icon(0.25))
+        stop = menu.addAction("Stop")
+        stop.triggered.connect(self.stop_event.emit)
+        stop.triggered.connect(lambda: self.update_icon(0.25))
         
         menu.addSeparator()
         
         quit_action = menu.addAction("Quit")
         quit_action.triggered.connect(lambda: self.parent().quit() if self.parent() else None)
-        
         self.setContextMenu(menu)
         self.menu = menu
 

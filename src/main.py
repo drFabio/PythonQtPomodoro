@@ -17,9 +17,11 @@ def main() -> None:
     ]
 
     state = State(intervals= itertools.cycle([Pomodoro,Short,Pomodoro,Short, Pomodoro,Long]))
-    tray = PomodoroTray(app)
+    tray = PomodoroTray(state, app)
     
     cycler = IconCycler(tray, state)
+    tray.pause_event.connect(cycler.pause)
+
     cycler.start()
     
     sys.exit(app.exec())
