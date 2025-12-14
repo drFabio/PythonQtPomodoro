@@ -16,14 +16,12 @@ def main() -> None:
         TimeSection(name="Short Break", duration=5, color=colors['YELLOW']),
         TimeSection(name="Long Break", duration=15, color=colors['ORANGE']),
     ]
-
     state = State(intervals= itertools.cycle([Pomodoro,Short,Pomodoro,Short, Pomodoro,Long]))
     menu = Menu(state)
     tray = PomodoroTray(state,menu, app)    
     cycler = IconCycler(tray, state)
-    ## state.quit_event.connect(lambda: app.quit())
+    state.quit_event.connect(lambda: app.quit())
     cycler.start()
-    
     sys.exit(app.exec())
 
 if __name__ == "__main__":

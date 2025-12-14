@@ -31,17 +31,22 @@ class State(QObject):
         self.current_interval: TimeSection | None = None
 
     def start(self):
-        self.status = Status.RUNNING
-        self.start_time =  int(time.time())
         interval =  next(self.intervals)
         self.current_interval = interval
+        self.resume()
         return interval
     
     def pause(self) -> None:
         info = self.getTime()
-        self.ellapsed_time += info.ellapsed
+        self.ellapsed_time = info.ellapsed
+        print(f"Saving ellapsed time ${info.ellapsed}")
         self.status = Status.PAUSED
-        
+
+    def resume(self) -> None:
+        self.status = Status.RUNNING
+        self.start_time = int(time.time())
+
+
     def stop(self):
         self.status = Status.STOPPED
 

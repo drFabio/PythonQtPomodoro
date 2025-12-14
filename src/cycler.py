@@ -13,6 +13,12 @@ class IconCycler:
         self.state = state
         self.timer.timeout.connect(self.__tick)        
         self.start_time: int
+        self._plug_events()
+    
+    def _plug_events(self):
+        self.state.pause_event.connect(self.pause)
+        self.state.resume_event.connect(self.resume)
+
 
     def start(self) -> None:
         self.interval = self.state.start()
@@ -25,13 +31,18 @@ class IconCycler:
         self.halt()
         self.state.pause()
 
+    def resume(self) ->None:
+        print("Resuming")
+        self.timer.start(TICK_INTERVAL) 
+        self.state.resume()
+
     def halt(self) -> None:
         self.timer.stop()
 
     def __tick(self) -> None:
         info = self.state.getTime()
 
-       ## print(f"Remaining: {info.remaining}")
+        print(f"Remaining: {info.remaining} {self.interval.name}")
         if info.remaining <= 0:
             self.halt()
             self.start()
