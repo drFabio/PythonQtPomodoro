@@ -1,15 +1,25 @@
 import sys
 from PyQt6.QtWidgets import QApplication
+from State import State
 from tray import PomodoroTray
 from cycler import IconCycler
+from TimeSection import TimeSection
+import itertools
+from common import colors
 
-def main():
+def main() -> None:
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
-    
+    Pomodoro,Short,Long = [
+        TimeSection(name="Pomodoro", duration=25, color=colors['RED']),
+        TimeSection(name="Short Break", duration=5, color=colors['YELLOW']),
+        TimeSection(name="Long Break", duration=15, color=colors['ORANGE']),
+    ]
+
+    state = State(intervals= itertools.cycle([Pomodoro,Short,Pomodoro,Short, Pomodoro,Long]))
     tray = PomodoroTray(app)
     
-    cycler = IconCycler(tray)
+    cycler = IconCycler(tray, state)
     cycler.start()
     
     sys.exit(app.exec())
