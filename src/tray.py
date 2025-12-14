@@ -6,26 +6,15 @@ from State import State
 from Menu import Menu
 
 class PomodoroTray(QSystemTrayIcon):
-    stop_event = pyqtSignal()
-    pause_event = pyqtSignal()
-    resume_event = pyqtSignal()
-    skip_event = pyqtSignal()
 
-    def __init__(self,state:State, parent: Optional[QObject] = None) -> None:
+    def __init__(self,state:State, menu:Menu, parent: Optional[QObject] = None) -> None:
         super().__init__(parent)
         self.state = state
+        self.menu = menu
         self.setToolTip("Pomodoro Timer")
         self.update_icon()        
-        self.setup_menu()
-        self.show()
-
-    def setup_menu(self) -> None:
-        menu = Menu(self)
         self.setContextMenu(menu)
-        self.menu = menu
-
-
-        
+        self.show()
 
     def update_icon(self, percentage: float=0,fill_color: QColor = QColor("#FF6347")) -> None:
         icon = self.create_circular_icon(percentage, fill_color)

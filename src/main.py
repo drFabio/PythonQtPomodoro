@@ -1,5 +1,6 @@
 import sys
 from PyQt6.QtWidgets import QApplication
+from Menu import Menu
 from State import State
 from tray import PomodoroTray
 from cycler import IconCycler
@@ -17,11 +18,10 @@ def main() -> None:
     ]
 
     state = State(intervals= itertools.cycle([Pomodoro,Short,Pomodoro,Short, Pomodoro,Long]))
-    tray = PomodoroTray(state, app)
-    
+    menu = Menu(state)
+    tray = PomodoroTray(state,menu, app)    
     cycler = IconCycler(tray, state)
-    tray.pause_event.connect(cycler.pause)
-
+    ## state.quit_event.connect(lambda: app.quit())
     cycler.start()
     
     sys.exit(app.exec())
