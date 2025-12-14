@@ -1,8 +1,9 @@
-from PyQt6.QtWidgets import QSystemTrayIcon, QMenu
+from PyQt6.QtWidgets import QSystemTrayIcon
 from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor, QBrush
 from PyQt6.QtCore import Qt, QObject, pyqtSignal
 from typing import Optional
 from State import State
+from Menu import Menu
 
 class PomodoroTray(QSystemTrayIcon):
     stop_event = pyqtSignal()
@@ -17,36 +18,14 @@ class PomodoroTray(QSystemTrayIcon):
         self.update_icon()        
         self.setup_menu()
         self.show()
-        self.activated.connect(self.on_activated)
 
     def setup_menu(self) -> None:
-        menu = QMenu()
-        
-    
-       
-        pause = menu.addAction("Pause")
-        pause.triggered.connect(self.pause_event.emit)
-        
-        resume = menu.addAction("Resume")
-        resume.triggered.connect(lambda: self.update_icon(0.50))
-        
-        stop = menu.addAction("Stop")
-        stop.triggered.connect(self.stop_event.emit)
-        stop.triggered.connect(lambda: self.update_icon(0.25))
-        
-        menu.addSeparator()
-        
-        quit_action = menu.addAction("Quit")
-        quit_action.triggered.connect(lambda: self.parent().quit() if self.parent() else None)
+        menu = Menu(self)
         self.setContextMenu(menu)
         self.menu = menu
 
-    def on_activated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
-       
-       
-        if reason == QSystemTrayIcon.ActivationReason.Trigger:
-           
-            self.menu.popup(self.geometry().center())
+
+        
 
     def update_icon(self, percentage: float=0,fill_color: QColor = QColor("#FF6347")) -> None:
         icon = self.create_circular_icon(percentage, fill_color)
