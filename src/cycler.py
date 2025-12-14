@@ -16,23 +16,22 @@ class IconCycler:
         self.start_time: int
 
     def start(self) -> None:
-        self.start_time = int(time.time())
-        self.interval = next(self.state.intervals)
+        self.interval = self.state.start()
         print(f"Starting interval: {self.interval.name}")
         self.timer.start(TICK_INTERVAL) 
         self.tray.update_icon(1.0, self.interval.color)
 
-
     
     def halt(self) -> None:
+        self.state.stop()
         self.timer.stop()
 
     def __tick(self) -> None:
         now = int(time.time())
-        ellapsed = now - self.start_time 
+        ellapsed = now - self.state.start_time 
         remaining = self.interval.duration - ellapsed
         print(f"Remaining: {remaining}")
-        if remaining < 0:
+        if remaining <= 0:
             self.halt()
             self.start()
             return
