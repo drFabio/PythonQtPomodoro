@@ -55,7 +55,6 @@ class State(QObject):
 
     def _reset_state(self):
         self.cycle: Iterator[TimeSection] = itertools.cycle(self._intervals)
-        self.interval: TimeSection | None = None
         # Time elapsed on the current cycle (in seconds)
         self.ellapsed_time: int = 0
         self.start_time: int = 0
