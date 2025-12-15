@@ -1,11 +1,11 @@
 from PyQt6.QtWidgets import QSystemTrayIcon
 from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor, QBrush
-from PyQt6.QtCore import Qt, QObject, pyqtSignal
+from PyQt6.QtCore import Qt, QObject
 from typing import Optional
 from State import State
 from Menu import Menu
 
-class PomodoroTray(QSystemTrayIcon):
+class Tray(QSystemTrayIcon):
 
     def __init__(self,state:State, menu:Menu, parent: Optional[QObject] = None) -> None:
         super().__init__(parent)
@@ -49,5 +49,17 @@ class PomodoroTray(QSystemTrayIcon):
         return QIcon(pixmap)
    
     def _plug_events(self):
-        pass
+        self.state.start_event.connect(self._on_start)
+        self.state.stop_event.connect(self._on_stop)
+        self.state.tick_event.connect(self._on_tick)
 
+
+    def _on_start(self):
+        self.update_icon(1.0, self.state.current_interval.color)
+ 
+    def _on_stop(self):
+        self.update_icon(1.0, self.state.current_interval.color)
+ 
+    def _on_tick(self):
+        info = self.state.getTime()
+        self.update_icon(info.percentage, self.state.current_interval.color)

@@ -11,40 +11,42 @@ class Menu(QMenu):
         super().__init__(parent)
         self.state = state
         self.pause = self.addAction("Pause")
-        self.pause.triggered.connect(lambda: state.pause_event.emit())
+        self.pause.triggered.connect(self._on_pause)
         self.resume = self.addAction("Resume")
-        self.resume.triggered.connect(lambda: state.resume_event.emit())
+        self.resume.triggered.connect(self._on_resume)
         self.stop = self.addAction("Stop")
-        self.stop.triggered.connect(lambda: state.stop_event.emit())
+        self.stop.triggered.connect(self._on_stop)
         self.start = self.addAction("Start")
-        self.start.triggered.connect(lambda: state.start_event.emit())
+        self.start.triggered.connect(self._on_start)
         self.addSeparator()
         self.quit_action = self.addAction("Quit")
-        self.quit_action.triggered.connect(lambda: state.quit_event.emit())
-        self._plug_events()
+        self.quit_action.triggered.connect(self._on_quit)
         self._on_start()
-    
-    def _plug_events(self):
-        self.state.pause_event.connect(self._on_pause)
-        self.state.resume_event.connect(self._on_resume)
-        self.state.stop_event.connect(self._on_stop)
+
 
     def _on_pause(self):
         self.pause.setDisabled(True)
         self.resume.setDisabled(False)
+        self.state.pause()
+
 
     def _on_resume(self):
         self.resume.setDisabled(True)
         self.pause.setDisabled(False)
+        self.state.resume()
+
 
     def _on_stop(self):
         self.start.setDisabled(False)
         self.stop.setDisabled(True)
+        self.state.stop()
+
 
     def _on_start(self):
         self.resume.setDisabled(True)
         self.start.setDisabled(True)
-        self.stop.setDisabled(False)    
+        self.stop.setDisabled(False) 
+        self.state.start()   
 
-
-
+    def _on_quit(self):
+        self.state.quit()
