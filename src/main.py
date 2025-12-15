@@ -5,7 +5,7 @@ from State import State
 from tray import PomodoroTray
 from cycler import IconCycler
 from TimeSection import TimeSection
-import itertools
+
 from common import colors
 
 def main() -> None:
@@ -16,7 +16,7 @@ def main() -> None:
         TimeSection(name="Short Break", duration=5, color=colors['YELLOW']),
         TimeSection(name="Long Break", duration=15, color=colors['ORANGE']),
     ]
-    state = State(intervals= itertools.cycle([Pomodoro,Short,Pomodoro,Short, Pomodoro,Long]))
+    state = State(intervals= [Pomodoro,Short,Pomodoro,Short, Pomodoro,Long])
     menu = Menu(state)
     tray = PomodoroTray(state,menu, app)    
     cycler = IconCycler(tray, state)

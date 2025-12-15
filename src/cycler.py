@@ -12,12 +12,13 @@ class IconCycler:
         self.timer = QTimer()
         self.state = state
         self.timer.timeout.connect(self.__tick)        
-        self.start_time: int
         self._plug_events()
     
     def _plug_events(self):
         self.state.pause_event.connect(self.pause)
         self.state.resume_event.connect(self.resume)
+        self.state.stop_event.connect(self._on_stop)
+        self.state.start_event.connect(self._on_start)
 
 
     def start(self) -> None:
@@ -39,6 +40,12 @@ class IconCycler:
     def halt(self) -> None:
         self.timer.stop()
 
+    def _on_stop(self)->None:
+        self.timer.stop()
+        self.tray.update_icon(1.0, self.interval.color)
+        self.state.stop()
+
+
     def __tick(self) -> None:
         info = self.state.getTime()
 
@@ -48,3 +55,6 @@ class IconCycler:
             self.start()
             return
         self.tray.update_icon(info.percentage, self.interval.color)
+
+    def _on_start(self)-> None:
+        self.start()

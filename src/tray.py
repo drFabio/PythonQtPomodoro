@@ -14,6 +14,7 @@ class PomodoroTray(QSystemTrayIcon):
         self.setToolTip("Pomodoro Timer")
         self.update_icon()        
         self.setContextMenu(menu)
+        self._plug_events()
         self.show()
 
     def update_icon(self, percentage: float=0,fill_color: QColor = QColor("#FF6347")) -> None:
@@ -46,3 +47,7 @@ class PomodoroTray(QSystemTrayIcon):
 
         painter.end()
         return QIcon(pixmap)
+   
+    def _plug_events(self):
+        pass
+
