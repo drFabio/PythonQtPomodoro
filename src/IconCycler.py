@@ -38,7 +38,7 @@ class IconCycler:
 
     def _next_cycle(self):
         self._on_stop()
-        self.state.start()
+        self.state.next_cycle()
 
     def __tick(self) -> None:
         info = self.state.getTime()

@@ -1,9 +1,10 @@
 import sys
 from PyQt6.QtWidgets import QApplication
+from IoHandler import IoHandler
 from Menu import Menu
 from State import State
 from Tray import Tray
-from cycler import IconCycler
+from IconCycler import IconCycler
 from TimeSection import TimeSection
 
 from common import colors
@@ -17,6 +18,7 @@ def main() -> None:
         TimeSection(name="Long Break", duration=15, color=colors['ORANGE']),
     ]
     state = State(intervals= [Pomodoro,Short,Pomodoro,Short, Pomodoro,Long])
+    io = IoHandler(state)
     menu = Menu(state)
     Tray(state,menu, app)    
     cycler = IconCycler(state)

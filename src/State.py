@@ -19,11 +19,18 @@ class State(QObject):
     start_event = pyqtSignal()
     quit_event = pyqtSignal()
     tick_event = pyqtSignal()
+    cycle_ended_event = pyqtSignal(dict)
 
     def __init__(self, intervals: [TimeSection] = []) -> None:
         super().__init__()
         self._intervals = intervals
         self._reset_state()
+
+    def next_cycle(self):
+        now = int(time.time()) 
+        print(f"Cycle ended {self.current_interval.name} {now} {self.start_time}")
+        self.cycle_ended_event.emit({"name": self.current_interval.name, "end":now, "start": self.start_time})
+        self.start()
 
     def start(self):
         interval =  next(self.cycle)
