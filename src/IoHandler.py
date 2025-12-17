@@ -37,6 +37,8 @@ class IoHandler:
             start=cycle_info['start'],
             end=cycle_info['end'],
             interval_label=cycle_info['name'],
+            session_id=cycle_info.get('uuid'),
+            cycle_count=cycle_info.get('cycle_count'),
         )
 
     def save_cycle(
@@ -44,6 +46,8 @@ class IoHandler:
         start: DateTimeLike,
         end: DateTimeLike,
         interval_label: str,
+        session_id: Optional[str] = None,
+        cycle_count: Optional[int] = None,
     ) -> bool:
         db = self._ensure_connection()
         if db is None:
@@ -58,13 +62,15 @@ class IoHandler:
         query = QSqlQuery(db)
         query.prepare(
             """
-            INSERT INTO pomodoro_cycles (start_time, end_time, interval_label)
-            VALUES (?, ?, ?)
+            INSERT INTO pomodoro_cycles (start_time, end_time, interval_label, uuid, cycle_count)
+            VALUES (?, ?, ?, ?, ?)
             """.strip()
         )
         query.addBindValue(start_iso)
         query.addBindValue(end_iso)
         query.addBindValue(interval_label)
+        query.addBindValue(session_id)
+        query.addBindValue(cycle_count)
 
         if not query.exec():
             return False
@@ -98,7 +104,9 @@ class IoHandler:
             "id INTEGER PRIMARY KEY AUTOINCREMENT, "
             "start_time TEXT NOT NULL, "
             "end_time TEXT NOT NULL, "
-            "interval_label TEXT NOT NULL"  # e.g. 'work', 'short_break'
+            "interval_label TEXT NOT NULL, "
+            "uuid TEXT, "
+            "cycle_count INTEGER"
             ")"
         )
 

@@ -1,5 +1,6 @@
 from typing import Iterator
 import time
+import uuid
 from collections import namedtuple
 from TimeSection import TimeSection
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -28,11 +29,21 @@ class State(QObject):
 
     def next_cycle(self):
         now = int(time.time()) 
-        print(f"Cycle ended {self.current_interval.name} {now} {self.start_time}")
-        self.cycle_ended_event.emit({"name": self.current_interval.name, "end":now, "start": self.start_time})
+        print(f"Cycle ended {self.current_interval.name} {now} {self.start_time} count {  self.cycles_count } index { self.interval_index }")
+        self.cycle_ended_event.emit({
+            "name": self.current_interval.name,
+            "end": now,
+            "start": self.start_time,
+            "uuid": self.session_id,
+            "cycle_count": self.cycles_count
+        })
+        if ( self.interval_index == len(self._intervals)-1):
+            self.cycles_count += 1
         self.start()
 
     def start(self):
+        self.interval_index =(self.interval_index + 1) % len(self._intervals)
+  
         interval =  next(self.cycle)
         self.current_interval = interval
         self._set_initial_state()
@@ -42,7 +53,6 @@ class State(QObject):
     def pause(self) -> None:
         info = self.getTime()
         self.ellapsed_time = info.ellapsed
-        print(f"Saving ellapsed time ${info.ellapsed}")
         self.status = Status.PAUSED
         self.pause_event.emit()
 
@@ -67,8 +77,10 @@ class State(QObject):
         self.start_time: int = 0
         self.stop_time: int = 0
         self.cycles_count: int = 0
+        self.interval_index: int = -1
         self.status: str = Status.STOPPED
         self.current_interval: TimeSection | None = None
+        self.session_id: str = str(uuid.uuid4())
 
 
     def getTime(self) -> TimeInfo:

@@ -20,7 +20,7 @@ class IconCycler:
 
 
     def start(self) -> None:
-        print(f"Starting interval: {self.state.current_interval.name}")
+        print(f"Starting interval: {self.state.current_interval.name} cycle {self.state.cycles_count} index {self.state.interval_index}")
         self.timer.start(TICK_INTERVAL) 
 
     def _on_pause(self) ->None:

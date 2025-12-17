@@ -13,9 +13,9 @@ def main() -> None:
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
     Pomodoro,Short,Long = [
-        TimeSection(name="Pomodoro", duration=25, color=colors['RED']),
-        TimeSection(name="Short Break", duration=5, color=colors['YELLOW']),
-        TimeSection(name="Long Break", duration=15, color=colors['ORANGE']),
+        TimeSection(name="Pomodoro", duration=2, color=colors['RED']),
+        TimeSection(name="Short Break", duration=2, color=colors['YELLOW']),
+        TimeSection(name="Long Break", duration=2, color=colors['ORANGE']),
     ]
     state = State(intervals= [Pomodoro,Short,Pomodoro,Short, Pomodoro,Long])
     io = IoHandler(state)
