@@ -4,12 +4,14 @@ from typing import Optional
 from PyQt6.QtWidgets import QMenu
 from PyQt6.QtCore import QObject
 from State import State
+from StatsWindow import StatsWindow
 
 
 class Menu(QMenu):
     def __init__(self, state:State, parent: Optional[QObject] = None) -> None:
         super().__init__(parent)
         self.state = state
+        self.stats_window = None
         # Status display for current cycle and remaining time
         self.status_action = self.addAction("")
         self.status_action.setDisabled(True)
@@ -21,6 +23,10 @@ class Menu(QMenu):
         self.stop.triggered.connect(self._on_stop)
         self.start = self.addAction("Start")
         self.start.triggered.connect(self._on_start)
+
+        self.stats_action = self.addAction("Stats")
+        self.stats_action.triggered.connect(self._on_stats)
+
         self.addSeparator()
         self.quit_action = self.addAction("Quit")
         self.quit_action.triggered.connect(self._on_quit)
@@ -73,6 +79,12 @@ class Menu(QMenu):
         self.start.setDisabled(True)
         self.stop.setDisabled(False) 
         self.state.start()   
+
+    def _on_stats(self):
+        if self.stats_window:
+            self.stats_window.close()
+        self.stats_window = StatsWindow()
+        self.stats_window.show()
 
     def _on_quit(self):
         self.state.quit()
