@@ -9,7 +9,6 @@ class StatsWindow(QWidget):
     def __init__(self, db_path: Optional[str] = None) -> None:
         super().__init__()
         if db_path is None:
-            # Default to the same location as IoHandler
             db_path = str(Path(__file__).resolve().parent / "pomodoro_stats.db")
         self.db_path = db_path
         
@@ -24,8 +23,6 @@ class StatsWindow(QWidget):
     def _load_data_and_setup_ui(self):
         rows = self._fetch_data()
         if not rows:
-            # If no data or file doesn't exist, we can still show the table empty
-            # or show a label. The requirement says "return empty data" -> show empty table.
             pass
 
         self.table = StatsTable(rows)
@@ -47,8 +44,6 @@ class StatsWindow(QWidget):
             return []
 
         query = QSqlQuery(db)
-        # Select all columns: id, start_time, end_time, interval_label
-        # Ordering by ID descending to show newest first
         if not query.exec("SELECT id, start_time, end_time, interval_label FROM pomodoro_cycles ORDER BY id DESC"):
             print(f"Failed to query stats: {query.lastError().text()}")
             db.close()
