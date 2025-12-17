@@ -1,9 +1,10 @@
 from pathlib import Path
 from typing import Optional, List, Tuple
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTabWidget
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 
 from StatsTable import StatsTable
+from Chart import Chart
 
 class StatsWindow(QWidget):
     def __init__(self, db_path: Optional[str] = None) -> None:
@@ -22,11 +23,18 @@ class StatsWindow(QWidget):
 
     def _load_data_and_setup_ui(self):
         rows = self._fetch_data()
-        if not rows:
-            pass
 
+        # Create Tab Widget
+        self.tabs = QTabWidget()
+        self._layout.addWidget(self.tabs)
+
+        # Tab 1: Stats Table
         self.table = StatsTable(rows)
-        self._layout.addWidget(self.table)
+        self.tabs.addTab(self.table, "Table")
+
+        # Tab 2: Chart
+        self.chart = Chart(db_path=self.db_path)
+        self.tabs.addTab(self.chart, "Chart")
 
     def _fetch_data(self) -> List[Tuple[int, str, str, str]]:
         if not Path(self.db_path).exists():
